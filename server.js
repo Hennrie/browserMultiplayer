@@ -54,6 +54,10 @@ io.on("connection", socket => {
 
     io.to(user.room).emit("message", formatMessage(user.username, msg));
   });
+
+  //Listen for user drawing
+  socket.on("drawing", data => socket.broadcast.emit("drawing", data));
+
   //Runs when client disconnects
   socket.on("disconnect", () => {
     const user = userLeave(socket.id);

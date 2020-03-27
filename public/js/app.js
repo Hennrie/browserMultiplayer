@@ -1,30 +1,57 @@
+"use strict";
+
 window.addEventListener("load", () => {
-  resize();
-  // Resizes the canvas once the window loads
-  canvas.addEventListener("mousedown", startPainting);
-  canvas.addEventListener("mouseup", stopPainting);
-  canvas.addEventListener("mousemove", sketch);
-  canvas.addEventListener("mouseleave", stopPainting);
-  readyBtn.addEventListener("click", userIsReady);
+  window.addEventListener("resize", onResize, false);
+  onResize();
+  canvas.addEventListener("mousedown", onMouseDown, false);
+  canvas.addEventListener("mouseup", onMouseUp, false);
+  canvas.addEventListener("mouseout", onMouseUp, false);
+  canvas.addEventListener("mousemove", throttle(onMouseMove, 10), false);
+
+  //Touch support for mobile devices
+  canvas.addEventListener("touchstart", onMouseDown, false);
+  canvas.addEventListener("touchend", onMouseUp, false);
+  canvas.addEventListener("touchcancel", onMouseUp, false);
+  canvas.addEventListener("touchmove", throttle(onMouseMove, 10), false);
+
   paintBrushSizes.forEach(item => {
     item.addEventListener("click", setBrushWidth);
   });
-  window.addEventListener("resize", resize);
-
   document.getElementById("clearBtn").addEventListener("click", clearDrawPanel);
 });
-const body = document.querySelector("body");
+
+var socket = io();
+
+/* var colors = document.getElementsByClassName('color'); */
+
 const canvas = document.querySelector("#drawArea");
+var context = canvas.getContext("2d");
 const readyBtn = document.getElementById("ready-btn");
 const paintBrushSizes = document.querySelectorAll(".lineWidth-panel div");
 
-let rect;
-let lineWidth = 5;
+var current = {
+  x: 0,
+  y: 0
+};
+var rect;
+var lineWidth = 5;
+
+/*  var current = {
+    color: 'black'
+  }; */
+var drawing = false;
+
+/* for (var i = 0; i < colors.length; i++) {
+  colors[i].addEventListener("click", onColorUpdate, false);
+} */
+
+socket.on("drawing", onDrawingEvent);
+
+var lineWidth = 5;
 // Context for the canvas for 2 dimensional operations
-const ctx = canvas.getContext("2d");
 
 function clearDrawPanel() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function setBrushWidth(event) {
@@ -36,68 +63,100 @@ function setBrushWidth(event) {
   console.log(event.target.offsetWidth);
 }
 
-// Resizes the canvas to the available size of the window.
-function resize() {
+function drawLine(x0, y0, x1, y1, emit) {
+  context.beginPath();
+  context.moveTo(x0, y0);
+  context.lineTo(x1, y1);
+  context.strokeStyle = "black";
+  context.lineWidth = lineWidth;
+  context.lineCap = "round";
+  context.stroke();
+  context.closePath();
+
+  if (!emit) {
+    return;
+  }
+  var w = canvas.width;
+  var h = canvas.height;
+
+  socket.emit("drawing", {
+    x0: x0 / w,
+    y0: y0 / h,
+    x1: x1 / w,
+    y1: y1 / h,
+    color: "black"
+  });
+}
+
+function onMouseDown(e) {
+  drawing = true;
   rect = canvas.getBoundingClientRect();
-
-  ctx.canvas.width = rect.width;
-  ctx.canvas.height = rect.height;
+  current.x = e.clientX - rect.left || e.touches[0].clientX - rect.left;
+  current.y = e.clientY - rect.top || e.touches[0].clientY - rect.top;
 }
 
-// Stores the initial position of the cursor
-let coord = { x: 0, y: 0 };
-
-// This is the flag that we are going to use to
-// trigger drawing
-let paint = false;
-
-// Updates the coordianates of the cursor when
-// an event e is triggered to the coordinates where
-// the said event is triggered.
-function getPosition(event) {
-  /* rect = canvas.getBoundingClientRect(); */
-  coord.x = event.clientX - rect.left;
-  coord.y = event.clientY - rect.top;
+function onMouseUp(e) {
+  if (!drawing) {
+    return;
+  }
+  drawing = false;
+  drawLine(
+    current.x,
+    current.y,
+    e.clientX - rect.left || e.touches[0].clientX - rect.left,
+    e.clientY - rect.top || e.touches[0].clientY - rect.top,
+    "black",
+    true
+  );
 }
 
-// The following functions toggle the flag to start
-// and stop drawing
-function startPainting(event) {
-  paint = true;
-  getPosition(event);
+function onMouseMove(e) {
+  if (!drawing) {
+    return;
+  }
+  drawLine(
+    current.x,
+    current.y,
+    e.clientX - rect.left || e.touches[0].clientX - rect.left,
+    e.clientY - rect.top || e.touches[0].clientY - rect.top,
+    "black",
+    true
+  );
+  current.x = e.clientX - rect.left || e.touches[0].clientX - rect.left;
+  current.y = e.clientY - rect.top || e.touches[0].clientY - rect.top;
 }
-function stopPainting() {
-  paint = false;
+
+/* function onColorUpdate(e) {
+  current.color = e.target.className.split(" ")[1];
+} */
+
+// limit the number of events per second
+function throttle(callback, delay) {
+  var previousCall = new Date().getTime();
+  return function() {
+    var time = new Date().getTime();
+
+    if (time - previousCall >= delay) {
+      previousCall = time;
+      callback.apply(null, arguments);
+    }
+  };
 }
 
-function sketch(event) {
-  if (!paint) return;
-  ctx.beginPath();
-
-  ctx.lineWidth = lineWidth;
-
-  // Sets the end of the lines drawn
-  // to a round shape.
-  ctx.lineCap = "round";
-
-  ctx.strokeStyle = "black";
-
-  // The cursor to start drawing
-  // moves to this coordinate
-  ctx.moveTo(coord.x, coord.y);
-
-  // The position of the cursor
-  // gets updated as we move the
-  // mouse around.
-  getPosition(event);
-
-  // A line is traced from start
-  // coordinate to this coordinate
-  ctx.lineTo(coord.x, coord.y);
-
-  // Draws the line.
-  ctx.stroke();
+function onDrawingEvent(data) {
+  var w = canvas.width;
+  var h = canvas.height;
+  drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, "black");
 }
+
+// make the canvas fill its parent
+function onResize() {
+  rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = rect.height;
+}
+
+//////
 
 const chatForm = document.getElementById("chat-form");
 const chatMessages = document.querySelector(".messages-container");
@@ -109,7 +168,7 @@ const { username, room } = Qs.parse(location.search, {
   ignoreQueryPrefix: true
 });
 
-const socket = io();
+/* const socket = io(); */
 
 //Join chatroom
 socket.emit("joinRoom", { username, room });

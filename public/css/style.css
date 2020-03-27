@@ -123,6 +123,7 @@ button {
 
 .chat-form-container form {
   display: flex;
+  align-items: baseline;
 }
 
 .chat-form-container input[type="text"] {
