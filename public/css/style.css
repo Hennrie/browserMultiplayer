@@ -54,8 +54,38 @@ ul {
   /* justify-content: space-between; */
 }
 
-.controlPanel button {
+.controlPanel > div,
+button {
+  cursor: pointer;
   margin: 20px;
+}
+
+.lineWidth-panel {
+  display: flex;
+  justify-content: center;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.lineWidth-panel :nth-child(1) {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background-color: black;
+}
+
+.lineWidth-panel :nth-child(2) {
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: black;
+}
+
+.lineWidth-panel :nth-child(3) {
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  background-color: black;
 }
 
 .draw-message-container {

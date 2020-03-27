@@ -6,7 +6,9 @@ window.addEventListener("load", () => {
   canvas.addEventListener("mousemove", sketch);
   canvas.addEventListener("mouseleave", stopPainting);
   readyBtn.addEventListener("click", userIsReady);
-
+  paintBrushSizes.forEach(item => {
+    item.addEventListener("click", setBrushWidth);
+  });
   window.addEventListener("resize", resize);
 
   document.getElementById("clearBtn").addEventListener("click", clearDrawPanel);
@@ -14,13 +16,24 @@ window.addEventListener("load", () => {
 const body = document.querySelector("body");
 const canvas = document.querySelector("#drawArea");
 const readyBtn = document.getElementById("ready-btn");
+const paintBrushSizes = document.querySelectorAll(".lineWidth-panel div");
 
 let rect;
+let lineWidth = 5;
 // Context for the canvas for 2 dimensional operations
 const ctx = canvas.getContext("2d");
 
 function clearDrawPanel() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function setBrushWidth(event) {
+  /* if (event.target !== this) {
+    return;
+  } else {
+  } */
+  lineWidth = event.target.offsetWidth;
+  console.log(event.target.offsetWidth);
 }
 
 // Resizes the canvas to the available size of the window.
@@ -61,7 +74,7 @@ function sketch(event) {
   if (!paint) return;
   ctx.beginPath();
 
-  ctx.lineWidth = 5;
+  ctx.lineWidth = lineWidth;
 
   // Sets the end of the lines drawn
   // to a round shape.
