@@ -63,7 +63,7 @@ function setBrushWidth(event) {
   console.log(event.target.offsetWidth);
 }
 
-function drawLine(x0, y0, x1, y1, emit) {
+function drawLine(x0, y0, x1, y1, lineWidth, emit) {
   context.beginPath();
   context.moveTo(x0, y0);
   context.lineTo(x1, y1);
@@ -84,7 +84,7 @@ function drawLine(x0, y0, x1, y1, emit) {
     y0: y0 / h,
     x1: x1 / w,
     y1: y1 / h,
-    color: "black"
+    lineWidth: lineWidth
   });
 }
 
@@ -105,7 +105,7 @@ function onMouseUp(e) {
     current.y,
     e.clientX - rect.left || e.touches[0].clientX - rect.left,
     e.clientY - rect.top || e.touches[0].clientY - rect.top,
-    "black",
+    lineWidth,
     true
   );
 }
@@ -119,7 +119,7 @@ function onMouseMove(e) {
     current.y,
     e.clientX - rect.left || e.touches[0].clientX - rect.left,
     e.clientY - rect.top || e.touches[0].clientY - rect.top,
-    "black",
+    lineWidth,
     true
   );
   current.x = e.clientX - rect.left || e.touches[0].clientX - rect.left;
@@ -146,7 +146,14 @@ function throttle(callback, delay) {
 function onDrawingEvent(data) {
   var w = canvas.width;
   var h = canvas.height;
-  drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, "black");
+  drawLine(
+    data.x0 * w,
+    data.y0 * h,
+    data.x1 * w,
+    data.y1 * h,
+    data.lineWidth,
+    "black"
+  );
 }
 
 // make the canvas fill its parent
