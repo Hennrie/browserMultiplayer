@@ -37,6 +37,19 @@ ul {
   align-items: center;
 }
 
+.app-description {
+  padding: 50px;
+  text-align: center;
+}
+
+.app-description span {
+  font-style: italic;
+}
+
+.app-description p {
+  margin-top: 30px;
+}
+
 .app-content-container {
   margin: auto;
   margin-top: 50px;
