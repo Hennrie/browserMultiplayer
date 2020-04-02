@@ -45,9 +45,9 @@ var drawing = false;
   colors[i].addEventListener("click", onColorUpdate, false);
 } */
 
+// handle drawing signal form server
 socket.on("drawing", onDrawingEvent);
 
-var lineWidth = 5;
 // Context for the canvas for 2 dimensional operations
 
 function clearDrawPanel() {
@@ -152,7 +152,7 @@ function onDrawingEvent(data) {
     data.x1 * w,
     data.y1 * h,
     data.lineWidth,
-    "black"
+    false
   );
 }
 
@@ -229,12 +229,12 @@ function outputMessage(message) {
 
 // Add room name to DOM
 function outputRoomName(room) {
-  roomName.innerText = room;
+  roomName.innerText += " " + room;
 }
 
 //Add users to ROM
 function outputUsers(users) {
-  userList.innerHTML = `
+  userList.innerHTML += `
     ${users.map(user => `<li>${user.username}<li>`).join("")}
   `;
 }

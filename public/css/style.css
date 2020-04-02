@@ -9,8 +9,6 @@
 body {
   font-family: "Roboto", sans-serif;
 
-  background-image: url(mathpaper.svg);
-  background-repeat: no-repeat;
   width: 100%;
   height: 100%;
   background-size: cover;
@@ -20,31 +18,43 @@ ul {
   list-style: none;
 }
 
+.join-container {
+  width: 500px;
+  height: 450px;
+  margin: auto;
+  margin-top: 100px;
+  background-color: aliceblue;
+}
+
+.join-header {
+  text-align: center;
+  padding: 20px;
+}
+
+.join-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .app-content-container {
   margin: auto;
   margin-top: 50px;
-  width: 70%;
-  height: 60vh;
+  width: 100%;
+  height: 80vh;
   display: flex;
+  padding: 30px;
 }
 
 #drawArea {
   /* display: block; */
 
   width: 100%;
-  height: 90%;
+  height: 100%;
   border: solid 3px darkblue;
   border-radius: 10px;
   border-style: groove;
   background-color: rgba(255, 255, 255, 0.65);
-}
-
-.taskHeading {
-  margin: auto;
-  margin-top: 100px;
-  width: 500px;
-  text-align: center;
-  background-color: lavenderblush;
 }
 
 .controlPanel {
@@ -57,7 +67,7 @@ ul {
 .controlPanel > div,
 button {
   cursor: pointer;
-  margin: 20px;
+  margin: 20px 0;
 }
 
 .lineWidth-panel {
@@ -90,7 +100,7 @@ button {
 
 .draw-message-container {
   display: flex;
-  width: 50%;
+  width: 70%;
   height: 100%;
   flex-direction: column;
   margin: 0 30px;
@@ -98,7 +108,7 @@ button {
 
 .messages-container {
   padding: 30px;
-
+  border-radius: 10px;
   width: 40%;
   height: 100%;
   background-color: rgb(37, 2, 49);
