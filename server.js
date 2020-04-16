@@ -7,8 +7,10 @@ const {
   setReady,
   getCurrentUser,
   userLeave,
-  getRoomUsers
+  getRoomUsers,
 } = require("./utils/user");
+
+const { newRoom, getRoomArray } = require("./utils/rooms");
 
 const app = express();
 const server = http.createServer(app);
@@ -18,8 +20,14 @@ const botName = "ChatBot";
 //Set static folder
 app.use(express.static(__dirname + "/public"));
 
-//Run when client connects
-io.on("connection", socket => {
+//Run when client connects to lobby
+io.on("connection", (socket) => {
+  console.log("a user connected!");
+
+  //send roomDetails signal with roomArray data
+  socket.emit("roomDetails", { rooms: getRoomArray() });
+
+  //listen for joining user and get user data
   socket.on("joinRoom", ({ username, room }) => {
     const user = userJoin(socket.id, username, room);
 
@@ -39,7 +47,7 @@ io.on("connection", socket => {
     //Send users and room info
     io.to(user.room).emit("roomUsers", {
       room: user.room,
-      users: getRoomUsers(user.room)
+      users: getRoomUsers(user.room),
     });
   });
 
@@ -49,14 +57,14 @@ io.on("connection", socket => {
   });
 
   //Listen for chatMesssage
-  socket.on("chatMessage", msg => {
+  socket.on("chatMessage", (msg) => {
     const user = getCurrentUser(socket.id);
 
     io.to(user.room).emit("message", formatMessage(user.username, msg));
   });
 
   //Listen for user drawing
-  socket.on("drawing", data => socket.broadcast.emit("drawing", data));
+  socket.on("drawing", (data) => socket.broadcast.emit("drawing", data));
 
   //Runs when client disconnects
   socket.on("disconnect", () => {
@@ -70,7 +78,7 @@ io.on("connection", socket => {
 
       io.to(user.room).emit("roomUsers", {
         room: user.room,
-        users: getRoomUsers(user.room)
+        users: getRoomUsers(user.room),
       });
     }
   });

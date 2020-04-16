@@ -20,10 +20,10 @@ ul {
 
 .join-container {
   width: 500px;
-  height: 450px;
+  height: 300px;
   margin: auto;
   margin-top: 100px;
-  background-color: aliceblue;
+  background-color: rgb(186, 230, 129);
 }
 
 .join-header {
@@ -31,13 +31,20 @@ ul {
   padding: 20px;
 }
 
-.join-main {
+/* .join-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+} */
+
+.login-form {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .app-description {
+  margin: auto;
   padding: 50px;
   text-align: center;
 }
@@ -48,6 +55,45 @@ ul {
 
 .app-description p {
   margin-top: 30px;
+}
+
+/* ########################################## 
+
+LOBBY
+
+*/
+
+.lobby-heading {
+  text-align: center;
+  margin: 100px 0;
+}
+
+.lobby-container {
+  margin: auto;
+  background-color: lightgrey;
+  width: 80%;
+
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+  align-items: baseline;
+}
+
+.lobby-details {
+  width: 350px;
+  padding: 50px;
+  margin: 20px;
+
+  background-color: rgb(185, 152, 236);
+}
+
+.lobby-details li {
+  margin: 10px;
+  list-style: none;
+}
+
+.lobby-details:hover {
+  cursor: pointer;
 }
 
 .app-content-container {

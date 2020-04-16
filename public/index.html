@@ -14,13 +14,20 @@
     <title>browser Multiplayer</title>
   </head>
   <body>
+    <div class="app-description">
+      <span>*UNDER CONSTRUCTION*</span> <br />
+      <p>
+        This webapplication allows multiple user to chat and play a drawing game
+        like "Montagsmaler" in seperate rooms
+      </p>
+    </div>
     <div class="join-container">
       <header class="join-header">
-        <h1><i class="fas fa-paint-brush"></i> Lets Draw!</h1>
+        <h1>Login</h1>
       </header>
       <main class="join-main">
-        <form action="main.html">
-          <div class="form-control">
+        <form action="lobby.html">
+          <div class="login-form">
             <label for="username">Username</label>
             <input
               type="text"
@@ -29,8 +36,10 @@
               placeholder="Enter username..."
               required
             />
+            <button type="submit" class="btn">Join Lobby</button>
           </div>
-          <div class="form-control">
+
+          <!--  <div class="form-control">
             <label for="room">Room</label>
             <select name="room" id="room">
               <option value="Room 1">Room 1</option>
@@ -51,17 +60,9 @@
               <option value="Orange">Orange</option>
               <option value="Pink">Pink</option>
             </select>
-          </div>
-          <button type="submit" class="btn">Join Room</button>
+          </div> -->
         </form>
       </main>
-      <div class="app-description">
-        <span>*UNDER CONSTRUCTION*</span> <br />
-        <p>
-          This webapplication allows multiple user to chat and play a drawing
-          game like "Montagsmaler" in seperate rooms
-        </p>
-      </div>
     </div>
   </body>
 </html>

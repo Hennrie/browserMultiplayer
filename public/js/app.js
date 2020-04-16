@@ -14,13 +14,13 @@ window.addEventListener("load", () => {
   canvas.addEventListener("touchcancel", onMouseUp, false);
   canvas.addEventListener("touchmove", throttle(onMouseMove, 10), false);
 
-  paintBrushSizes.forEach(item => {
+  paintBrushSizes.forEach((item) => {
     item.addEventListener("click", setBrushWidth);
   });
   document.getElementById("clearBtn").addEventListener("click", clearDrawPanel);
 });
 
-var socket = io();
+const socket = io();
 
 /* var colors = document.getElementsByClassName('color'); */
 
@@ -31,7 +31,7 @@ const paintBrushSizes = document.querySelectorAll(".lineWidth-panel div");
 
 var current = {
   x: 0,
-  y: 0
+  y: 0,
 };
 var rect;
 var lineWidth = 5;
@@ -84,7 +84,7 @@ function drawLine(x0, y0, x1, y1, lineWidth, emit) {
     y0: y0 / h,
     x1: x1 / w,
     y1: y1 / h,
-    lineWidth: lineWidth
+    lineWidth: lineWidth,
   });
 }
 
@@ -133,7 +133,7 @@ function onMouseMove(e) {
 // limit the number of events per second
 function throttle(callback, delay) {
   var previousCall = new Date().getTime();
-  return function() {
+  return function () {
     var time = new Date().getTime();
 
     if (time - previousCall >= delay) {
@@ -163,7 +163,12 @@ function onResize() {
   canvas.height = rect.height;
 }
 
-//////
+/* ##################################
+
+Chat logic
+
+
+ ##################################*/
 
 const chatForm = document.getElementById("chat-form");
 const chatMessages = document.querySelector(".messages-container");
@@ -171,11 +176,9 @@ const roomName = document.getElementById("room-name");
 const userList = document.getElementById("users");
 
 // Get username and room from URL
-const { username, room } = Qs.parse(location.search, {
-  ignoreQueryPrefix: true
-});
-
-/* const socket = io(); */
+/* const { username, room } = Qs.parse(location.search, {
+  ignoreQueryPrefix: true,
+}); */
 
 //Join chatroom
 socket.emit("joinRoom", { username, room });
@@ -192,7 +195,7 @@ function userIsReady() {
 }
 
 //Message from server
-socket.on("message", message => {
+socket.on("message", (message) => {
   /*  console.log(message); */
   outputMessage(message);
 
@@ -201,7 +204,7 @@ socket.on("message", message => {
 });
 
 //Message submit
-chatForm.addEventListener("submit", e => {
+chatForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
   //Get message text
@@ -235,7 +238,7 @@ function outputRoomName(room) {
 //Add users to ROM
 function outputUsers(users) {
   userList.innerHTML += `
-    ${users.map(user => `<li>${user.username}<li>`).join("")}
+    ${users.map((user) => `<li>${user.username}<li>`).join("")}
   `;
 }
 
