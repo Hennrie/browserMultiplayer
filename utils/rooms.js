@@ -4,12 +4,13 @@ let rooms = [
     roomName: "room1",
     status: "waiting for players",
     playerCount: 0,
-    playerMaxCount:
+    playerMaxCount: 8,
   },
   {
     roomName: "room2",
     status: "waiting for players",
     playerCount: 0,
+    playerMaxCount: 6,
   },
 ];
 
