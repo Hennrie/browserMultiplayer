@@ -18,7 +18,7 @@ ul {
   list-style: none;
 }
 
-.join-container {
+.login-container {
   width: 500px;
   height: 300px;
   margin: auto;
@@ -26,7 +26,7 @@ ul {
   background-color: rgb(186, 230, 129);
 }
 
-.join-header {
+.login-header {
   text-align: center;
   padding: 20px;
 }
@@ -37,7 +37,7 @@ ul {
   align-items: center;
 } */
 
-.login-form {
+.login-container {
   display: flex;
   flex-direction: column;
   align-items: center;

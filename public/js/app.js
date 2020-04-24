@@ -6,13 +6,17 @@ window.addEventListener("load", () => {
   canvas.addEventListener("mousedown", onMouseDown, false);
   canvas.addEventListener("mouseup", onMouseUp, false);
   canvas.addEventListener("mouseout", onMouseUp, false);
-  canvas.addEventListener("mousemove", throttle(onMouseMove, 10), false);
+  canvas.addEventListener("mousemove", () => {
+    throttle(onMouseMove, 10), false;
+  });
 
   //Touch support for mobile devices
   canvas.addEventListener("touchstart", onMouseDown, false);
   canvas.addEventListener("touchend", onMouseUp, false);
   canvas.addEventListener("touchcancel", onMouseUp, false);
-  canvas.addEventListener("touchmove", throttle(onMouseMove, 10), false);
+  canvas.addEventListener("touchmove", () => {
+    throttle(onMouseMove, 10), false;
+  });
 
   paintBrushSizes.forEach((item) => {
     item.addEventListener("click", setBrushWidth);
@@ -181,7 +185,7 @@ const userList = document.getElementById("users");
 }); */
 
 //Join chatroom
-socket.emit("joinRoom", { username, room });
+/* socket.emit("joinRoom", { username, room }); */
 
 //Get room and users
 socket.on("roomUsers", ({ room, users }) => {

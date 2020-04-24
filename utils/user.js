@@ -1,10 +1,14 @@
 const users = [];
 
+function getUsersArray() {
+  return users;
+}
 //Join user to chat
 function userJoin(id, username, room, ready) {
   const user = { id, username, room, ready };
 
   users.push(user);
+  console.log(users);
   return user;
 }
 
@@ -33,10 +37,19 @@ function getRoomUsers(room) {
   return users.filter((user) => user.room === room);
 }
 
+function isUsernameAvailable(username) {
+  if (users.some((user) => user.username === username)) return true;
+  else return false;
+  /* return users.filter((user) => user.username === username);
+} */
+}
+
 module.exports = {
+  getUsersArray,
   userJoin,
   setReady,
   getCurrentUser,
   userLeave,
   getRoomUsers,
+  isUsernameAvailable,
 };

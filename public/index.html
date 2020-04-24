@@ -21,48 +21,23 @@
         like "Montagsmaler" in seperate rooms
       </p>
     </div>
-    <div class="join-container">
-      <header class="join-header">
+
+    <div class="login-container">
+      <header class="login-header">
         <h1>Login</h1>
       </header>
-      <main class="join-main">
-        <form action="lobby.html">
-          <div class="login-form">
-            <label for="username">Username</label>
-            <input
-              type="text"
-              name="username"
-              id="username"
-              placeholder="Enter username..."
-              required
-            />
-            <button type="submit" class="btn">Join Lobby</button>
-          </div>
-
-          <!--  <div class="form-control">
-            <label for="room">Room</label>
-            <select name="room" id="room">
-              <option value="Room 1">Room 1</option>
-              <option value="Room 2">Room 2</option>
-              <option value="Room 3">Room 3</option>
-              <option value="Room 4">Room 4</option>
-              <option value="Room 5">Room 5</option>
-              <option value="Room 6">Room 6</option>
-            </select>
-          </div>
-          <div class="form-control">
-            <label for="Paint">Paint</label>
-            <select name="paint" id="paint">
-              <option value="Black">Black</option>
-              <option value="Blue">Blue</option>
-              <option value="Red">Red</option>
-              <option value="Green">Green</option>
-              <option value="Orange">Orange</option>
-              <option value="Pink">Pink</option>
-            </select>
-          </div> -->
-        </form>
-      </main>
+      <div class="login-container">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          placeholder="Enter username..."
+          required
+        />
+        <button id="login-btn" class="btn">Join Lobby</button>
+      </div>
     </div>
   </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/login.js"></script>
 </html>

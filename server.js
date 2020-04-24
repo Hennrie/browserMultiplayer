@@ -1,36 +1,56 @@
 const http = require("http");
+const io = require("socket.io")();
 const express = require("express");
-const socketio = require("socket.io");
 const formatMessage = require("./utils/message");
 const {
+  getUsersArray,
   userJoin,
   setReady,
   getCurrentUser,
   userLeave,
   getRoomUsers,
+  isUsernameAvailable,
 } = require("./utils/user");
 
 const { newRoom, getRoomArray } = require("./utils/rooms");
 
 const app = express();
 const server = http.createServer(app);
-const io = socketio(server);
-
 const botName = "ChatBot";
+
+io.attach(server);
 //Set static folder
 app.use(express.static(__dirname + "/public"));
 
-//Run when client connects to lobby
-io.on("connection", (socket) => {
-  console.log("a user connected!");
+const nspLogin = io.of("/login");
+
+nspLogin.on("connection", function (socket) {
+  console.log("user connected to login");
+  socket.on("loginRequest", (username) => {
+    if (!isUsernameAvailable(username)) {
+      userJoin(socket.id, username, "lobby", false);
+      socket.emit("loginSuccessed");
+    } else socket.emit("loginFailed");
+  });
+});
+
+const nspLobby = io.of("/lobby");
+//Run when client connect to lobby
+nspLobby.on("connection", function (socket) {
+  console.log("a user connected to lobby!");
 
   //send roomDetails signal with roomArray data
-  socket.emit("roomDetails", { rooms: getRoomArray() });
+  socket.emit(
+    "roomDetails",
+    { rooms: getRoomArray() },
+    { users: getRoomUsers() }
+  );
 
   //listen for joining user and get user data
-  socket.on("joinRoom", ({ username, room }) => {
-    const user = userJoin(socket.id, username, room);
 
+  socket.on("joinRoom", ({ username, room }) => {
+    const user = userJoin(socket.id, username, room.roomName, false);
+    console.log("user " + username + " has joined room " + room.roomName);
     socket.join(user.room);
 
     //Welcome new user
@@ -67,8 +87,9 @@ io.on("connection", (socket) => {
   socket.on("drawing", (data) => socket.broadcast.emit("drawing", data));
 
   //Runs when client disconnects
-  socket.on("disconnect", () => {
+  /* socket.on("disconnect", () => {
     const user = userLeave(socket.id);
+    console.log("user disconnected!");
 
     if (user) {
       io.to(user.room).emit(
@@ -81,7 +102,7 @@ io.on("connection", (socket) => {
         users: getRoomUsers(user.room),
       });
     }
-  });
+  }); */
 });
 
 const PORT = process.env.PORT || 3000;
