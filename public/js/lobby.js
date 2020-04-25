@@ -10,6 +10,8 @@ const currentUserName = urlParams.get("username");
 const userList = document.getElementById("users");
 const socket = io("/lobby");
 
+socket.emit("joinLobby");
+
 socket.on("roomDetails", ({ rooms }) => {
   outputRoomDetails(rooms);
   /* outputUsers(users); */

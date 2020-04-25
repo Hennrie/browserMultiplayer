@@ -1,5 +1,3 @@
-"use strict";
-
 window.addEventListener("load", () => {
   window.addEventListener("resize", onResize, false);
   onResize();
@@ -20,7 +18,7 @@ window.addEventListener("load", () => {
   document.getElementById("clearBtn").addEventListener("click", clearDrawPanel);
 });
 
-const socket = io();
+const socket = io("/lobby");
 
 /* var colors = document.getElementsByClassName('color'); */
 

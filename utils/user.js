@@ -19,20 +19,20 @@ function setReady(id) {
 }
 
 //Set user room
-function setRoom(id, room) {
-  getCurrentUser(id).room = room;
+function setRoom(name, room) {
+  getCurrentUser(name).room = room;
 
   console.log(users);
 }
 
 //Get current user
-function getCurrentUser(id) {
-  return users.find((user) => user.id === id);
+function getCurrentUser(name) {
+  return users.find((user) => user.username === name);
 }
 
 //User leaves chat
-function userLeave(id) {
-  const index = users.findIndex((user) => user.id === id);
+function userLeave(name) {
+  const index = users.findIndex((user) => user.username === name);
 
   if (index !== -1) {
     console.log("user deleted");
