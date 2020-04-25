@@ -13,7 +13,6 @@ loginBtn.addEventListener("click", () => {
     alert("Sorry! Your username should only contain letters and/or numbers");
 });
 socket.on("loginSuccessed", () => {
-  console.log("success");
   window.location.href = "lobby.html";
 });
 socket.on("loginFailed", () => {

@@ -1,8 +1,6 @@
 /* const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 
-const socket = io();
-
 window.addEventListener("load", () => {
   console.log(socket.username);
 });
@@ -37,13 +35,7 @@ function outputRoomDetails(rooms) {
 }
 
 function joinRoom(room) {
-  socket.emit("joinRoom", { currentUserName, room });
-
+  socket.emit("joinRoom", { room });
+  window.location.href = "main.html";
   console.log(room.roomName);
-}
-
-function outputUsers(users) {
-  userList.innerHTML += `
-    ${users.map((user) => `<li>${user.username}<li>`).join("")}
-  `;
 }

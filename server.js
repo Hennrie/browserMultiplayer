@@ -6,6 +6,7 @@ const {
   getUsersArray,
   userJoin,
   setReady,
+  setRoom,
   getCurrentUser,
   userLeave,
   getRoomUsers,
@@ -17,6 +18,8 @@ const { newRoom, getRoomArray } = require("./utils/rooms");
 const app = express();
 const server = http.createServer(app);
 const botName = "ChatBot";
+let userName = "";
+let userIsActive = false;
 
 io.attach(server);
 //Set static folder
@@ -28,7 +31,8 @@ nspLogin.on("connection", function (socket) {
   console.log("user connected to login");
   socket.on("loginRequest", (username) => {
     if (!isUsernameAvailable(username)) {
-      userJoin(socket.id, username, "lobby", false);
+      userName = username;
+      /* userJoin(socket.id, username, "lobby", false); */
       socket.emit("loginSuccessed");
     } else socket.emit("loginFailed");
   });
@@ -37,7 +41,11 @@ nspLogin.on("connection", function (socket) {
 const nspLobby = io.of("/lobby");
 //Run when client connect to lobby
 nspLobby.on("connection", function (socket) {
+  userIsActive = true;
   console.log("a user connected to lobby!");
+  if (!isUsernameAvailable(userName)) {
+    userJoin(socket.id, userName, "lobby", false);
+  }
 
   //send roomDetails signal with roomArray data
   socket.emit(
@@ -48,26 +56,29 @@ nspLobby.on("connection", function (socket) {
 
   //listen for joining user and get user data
 
-  socket.on("joinRoom", ({ username, room }) => {
-    const user = userJoin(socket.id, username, room.roomName, false);
+  socket.on("joinRoom", ({ room }) => {
+    /* const user = userJoin(socket.id, room.roomName, false); */
+    setRoom(socket.id, room.roomName);
+    const username = getCurrentUser(socket.id).username;
     console.log("user " + username + " has joined room " + room.roomName);
-    socket.join(user.room);
+
+    socket.join(room.roomName);
 
     //Welcome new user
     socket.emit("message", formatMessage(botName, "Welcome to my playground!"));
 
     //Broadcast when a user connects
     socket.broadcast
-      .to(user.room)
+      .to(room.roomName)
       .emit(
         "message",
-        formatMessage(botName, `${user.username} has joined the chat`)
+        formatMessage(botName, `${username} has joined the chat`)
       );
 
     //Send users and room info
-    io.to(user.room).emit("roomUsers", {
-      room: user.room,
-      users: getRoomUsers(user.room),
+    io.to(room.roomName).emit("roomUsers", {
+      room: room.roomName,
+      users: getRoomUsers(room.roomName),
     });
   });
 
@@ -87,22 +98,26 @@ nspLobby.on("connection", function (socket) {
   socket.on("drawing", (data) => socket.broadcast.emit("drawing", data));
 
   //Runs when client disconnects
-  /* socket.on("disconnect", () => {
-    const user = userLeave(socket.id);
-    console.log("user disconnected!");
+  socket.on("disconnect", () => {
+    userIsActive = false;
 
-    if (user) {
-      io.to(user.room).emit(
-        "message",
-        formatMessage(botName, `${user.username} has left the chat`)
-      );
+    if (userIsActive === false) {
+      const user = userLeave(socket.id);
+      console.log("user disconnected!");
 
-      io.to(user.room).emit("roomUsers", {
-        room: user.room,
-        users: getRoomUsers(user.room),
-      });
+      if (user) {
+        io.to(user.room).emit(
+          "message",
+          formatMessage(botName, `${user.username} has left the chat`)
+        );
+
+        io.to(user.room).emit("roomUsers", {
+          room: user.room,
+          users: getRoomUsers(user.room),
+        });
+      }
     }
-  }); */
+  });
 });
 
 const PORT = process.env.PORT || 3000;
